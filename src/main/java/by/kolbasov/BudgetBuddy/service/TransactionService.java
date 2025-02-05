@@ -17,6 +17,7 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final LimitRepository limitRepository;
+    private final CurrencyConverterService currencyConverterService;
 
     public void saveTransaction(TransactionRequest transactionRequest) {
         Limit limit = limitRepository.findByUserIdAndExpenseCategory(transactionRequest.getUserId(),transactionRequest.getExpenseCategory())
@@ -27,7 +28,11 @@ public class TransactionService {
                         .sumUSD(BigDecimal.valueOf(1000))
                         .build());
 
-        limit.setSumUSD(limit.getSumUSD().subtract(transactionRequest.getSum()));
+
+
+
+        limit.setSumUSD(limit.getSumUSD().subtract(currencyConverterService.convertCurrency(transactionRequest.getSum(), transactionRequest.getCurrency())));
+
         if(limit.getSumUSD().compareTo(BigDecimal.valueOf(0)) >= 0){
             Transaction transaction = Transaction.builder()
                     .userId(transactionRequest.getUserId())

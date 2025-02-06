@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -20,30 +21,40 @@ public class TransactionService {
     private final CurrencyConverterService currencyConverterService;
 
     public void saveTransaction(TransactionRequest transactionRequest) {
-        Limit limit = limitRepository.findByUserIdAndExpenseCategory(transactionRequest.getUserId(),transactionRequest.getExpenseCategory())
+        Limit limit = limitRepository.findTopByAccountFromAndExpenseCategoryOrderByDateTimeDesc(transactionRequest.getAccountFrom(),transactionRequest.getExpenseCategory())
                 .orElse(Limit.builder()
-                        .userId(transactionRequest.getUserId())
+                        .accountFrom(transactionRequest.getAccountFrom())
                         .expenseCategory(transactionRequest.getExpenseCategory())
-                        .date(LocalDateTime.now())
-                        .sumUSD(BigDecimal.valueOf(1000))
+                        .dateTime(ZonedDateTime.now())
+                        .sumUsd(BigDecimal.valueOf(1000))
+                        .remainingLimit(BigDecimal.valueOf(1000))
                         .build());
 
+        limit.setRemainingLimit(limit.getRemainingLimit().subtract(currencyConverterService.convertCurrency(transactionRequest.getSum(), transactionRequest.getCurrencyShortname())));
 
-
-
-        limit.setSumUSD(limit.getSumUSD().subtract(currencyConverterService.convertCurrency(transactionRequest.getSum(), transactionRequest.getCurrency())));
-
-        if(limit.getSumUSD().compareTo(BigDecimal.valueOf(0)) >= 0){
-            Transaction transaction = Transaction.builder()
-                    .userId(transactionRequest.getUserId())
+        if(limit.getRemainingLimit().compareTo(BigDecimal.valueOf(0)) >= 0){
+            transactionRepository.save( Transaction.builder()
+                    .accountFrom(transactionRequest.getAccountFrom())
+                    .accountTo(transactionRequest.getAccountTo())
                     .sum(transactionRequest.getSum())
-                    .currency(transactionRequest.getCurrency())
-                    .date(LocalDateTime.now())
+                    .currencyShortname(transactionRequest.getCurrencyShortname())
+                    .dateTime(ZonedDateTime.now())
                     .expenseCategory(transactionRequest.getExpenseCategory())
                     .limit(limit)
                     .limitExceeded(false)
-                    .build();
-            transactionRepository.save(transaction);
+                    .build());
+
+        }else{
+            transactionRepository.save(Transaction.builder()
+                    .accountFrom(transactionRequest.getAccountFrom())
+                    .accountTo(transactionRequest.getAccountTo())
+                    .sum(transactionRequest.getSum())
+                    .currencyShortname(transactionRequest.getCurrencyShortname())
+                    .dateTime(ZonedDateTime.now())
+                    .expenseCategory(transactionRequest.getExpenseCategory())
+                    .limit(limit)
+                    .limitExceeded(true)
+                    .build());
         }
 
 

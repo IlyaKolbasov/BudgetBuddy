@@ -16,9 +16,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransactionRequest {
-    private Long userId;
+    private Long accountFrom;
+    private Long accountTo;
     private BigDecimal sum;
-    private String currency;
+    private String currencyShortname;
     @Enumerated(EnumType.STRING)
     private ExpenseCategory expenseCategory;
 

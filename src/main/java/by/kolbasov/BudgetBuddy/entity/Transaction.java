@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
 @Data
@@ -19,10 +20,11 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long userId;
+    private Long accountFrom;
+    private Long accountTo;
     private BigDecimal sum;
-    private String currency;
-    private LocalDateTime date;
+    private String currencyShortname;
+    private ZonedDateTime dateTime;
     @Enumerated(EnumType.STRING)
     private ExpenseCategory expenseCategory;
     private boolean limitExceeded;

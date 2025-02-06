@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LimitRequest {
-    private Long userId;
-    private BigDecimal sumUSD;
+    private Long accountFrom;
+    private BigDecimal sumUsd;
     @Enumerated(EnumType.STRING)
     private ExpenseCategory expenseCategory;
 }

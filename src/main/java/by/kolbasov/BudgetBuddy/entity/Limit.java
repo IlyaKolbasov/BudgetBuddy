@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Entity
@@ -24,9 +25,10 @@ public class Limit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long userId;
-    private BigDecimal sumUSD;
-    private LocalDateTime date;
+    private long accountFrom;
+    private BigDecimal sumUsd;
+    private BigDecimal remainingLimit;
+    private ZonedDateTime dateTime;
     @Enumerated(EnumType.STRING)
     private ExpenseCategory expenseCategory;
     @OneToMany(mappedBy = "limit")

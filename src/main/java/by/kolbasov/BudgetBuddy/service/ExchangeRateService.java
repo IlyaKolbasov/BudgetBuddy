@@ -20,10 +20,8 @@ public class ExchangeRateService {
 
     private final ExchangeRateRepository exchangeRateRepository;
     private final RestTemplate restTemplate = new RestTemplate();
-    @Value("@{key}")
-    private String apiKey;
 
-    @Scheduled(cron = "0 0 11 * * ?")
+    @Scheduled(cron = "0 00 11 * * ?")
     @Scheduled(cron = "0 50 23 * * ?")// закрытие торгов
     private void convertCurrency(){
         updateExchangeRate("RUB/USD");

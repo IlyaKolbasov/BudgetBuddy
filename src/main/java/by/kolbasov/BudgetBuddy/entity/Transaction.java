@@ -23,7 +23,7 @@ public class Transaction {
     private Long accountFrom;
     private Long accountTo;
     private BigDecimal sum;
-    private String currencyShortname;
+    private String currencyShortName;
     private ZonedDateTime dateTime;
     @Enumerated(EnumType.STRING)
     private ExpenseCategory expenseCategory;

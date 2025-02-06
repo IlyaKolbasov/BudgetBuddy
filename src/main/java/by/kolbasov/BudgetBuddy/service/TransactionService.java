@@ -30,14 +30,14 @@ public class TransactionService {
                         .remainingLimit(BigDecimal.valueOf(1000))
                         .build());
 
-        limit.setRemainingLimit(limit.getRemainingLimit().subtract(currencyConverterService.convertCurrency(transactionRequest.getSum(), transactionRequest.getCurrencyShortname())));
+        limit.setRemainingLimit(limit.getRemainingLimit().subtract(currencyConverterService.convertCurrency(transactionRequest.getSum(), transactionRequest.getCurrencyShortName())));
 
         if(limit.getRemainingLimit().compareTo(BigDecimal.valueOf(0)) >= 0){
             transactionRepository.save( Transaction.builder()
                     .accountFrom(transactionRequest.getAccountFrom())
                     .accountTo(transactionRequest.getAccountTo())
                     .sum(transactionRequest.getSum())
-                    .currencyShortname(transactionRequest.getCurrencyShortname())
+                    .currencyShortName(transactionRequest.getCurrencyShortName())
                     .dateTime(ZonedDateTime.now())
                     .expenseCategory(transactionRequest.getExpenseCategory())
                     .limit(limit)
@@ -49,7 +49,7 @@ public class TransactionService {
                     .accountFrom(transactionRequest.getAccountFrom())
                     .accountTo(transactionRequest.getAccountTo())
                     .sum(transactionRequest.getSum())
-                    .currencyShortname(transactionRequest.getCurrencyShortname())
+                    .currencyShortName(transactionRequest.getCurrencyShortName())
                     .dateTime(ZonedDateTime.now())
                     .expenseCategory(transactionRequest.getExpenseCategory())
                     .limit(limit)

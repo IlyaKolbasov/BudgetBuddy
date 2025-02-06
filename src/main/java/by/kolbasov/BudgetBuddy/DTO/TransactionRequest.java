@@ -19,7 +19,7 @@ public class TransactionRequest {
     private Long accountFrom;
     private Long accountTo;
     private BigDecimal sum;
-    private String currencyShortname;
+    private String currencyShortName;
     @Enumerated(EnumType.STRING)
     private ExpenseCategory expenseCategory;
 

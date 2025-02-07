@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface LimitRepository extends JpaRepository<Limit, Long> {
 
-    Optional<Limit> findTopByAccountFromAndExpenseCategoryOrderByDateTimeDesc(Long accountFrom, ExpenseCategory expenseCategory);
+    Optional<Limit> findTopByAccountFromAndExpenseCategoryOrderByLimitDateTimeDesc(Long accountFrom, ExpenseCategory expenseCategory);
 
 }

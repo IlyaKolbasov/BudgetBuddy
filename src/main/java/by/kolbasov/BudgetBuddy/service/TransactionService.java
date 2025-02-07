@@ -24,12 +24,13 @@ public class TransactionService {
 
 
     public void saveTransaction(TransactionRequest transactionRequest) {
-        Limit limit = limitRepository.findTopByAccountFromAndExpenseCategoryOrderByDateTimeDesc(transactionRequest.getAccountFrom(), transactionRequest.getExpenseCategory())
+        Limit limit = limitRepository.findTopByAccountFromAndExpenseCategoryOrderByLimitDateTimeDesc(transactionRequest.getAccountFrom(), transactionRequest.getExpenseCategory())
                 .orElse(Limit.builder()
                         .accountFrom(transactionRequest.getAccountFrom())
                         .expenseCategory(transactionRequest.getExpenseCategory())
-                        .dateTime(ZonedDateTime.now())
-                        .sumUsd(BigDecimal.valueOf(1000))
+                        .limitDateTime(ZonedDateTime.now())
+                        .limitCurrency("USD")
+                        .limitSum(BigDecimal.valueOf(1000))
                         .remainingLimit(BigDecimal.valueOf(1000))
                         .build());
 

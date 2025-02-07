@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.Currency;
 import java.util.List;
 
 @Entity
@@ -20,16 +21,16 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name="limit_transaction")
 public class Limit {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private long accountFrom;
-    private BigDecimal sumUsd;
+    private BigDecimal limitSum;
     private BigDecimal remainingLimit;
-    private ZonedDateTime dateTime;
+    private ZonedDateTime limitDateTime;
     @Enumerated(EnumType.STRING)
     private ExpenseCategory expenseCategory;
+    private String limitCurrency;
     @OneToMany(mappedBy = "limit")
     private List<Transaction> transactions;
 

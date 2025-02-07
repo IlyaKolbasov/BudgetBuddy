@@ -19,26 +19,27 @@ import java.util.List;
 public class LimitService {
     private final LimitRepository limitRepository;
     private final TransactionRepository transactionRepository;
-    private final CurrencyConverterService currencyConverterService;
 
     public void saveLimit(LimitRequest limitRequest) {
-        if (limitRepository.findTopByAccountFromAndExpenseCategoryOrderByDateTimeDesc(limitRequest.getAccountFrom(), limitRequest.getExpenseCategory()).isPresent()) {
+        if (limitRepository.findTopByAccountFromAndExpenseCategoryOrderByLimitDateTimeDesc(limitRequest.getAccountFrom(), limitRequest.getExpenseCategory()).isPresent()) {
 
             limitRepository.save(Limit.builder()
                     .accountFrom(limitRequest.getAccountFrom())
-                    .sumUsd(limitRequest.getSumUsd())
+                    .limitSum(limitRequest.getSumUsd())
                     .remainingLimit(limitRequest.getSumUsd()
                             .subtract(sumAmountsByCurrency(limitRequest.getAccountFrom(), limitRequest.getExpenseCategory())))
                     .expenseCategory(limitRequest.getExpenseCategory())
-                    .dateTime(ZonedDateTime.now())
+                    .limitDateTime(ZonedDateTime.now())
+                    .limitCurrency("USD")
                     .build());
         }else {
             limitRepository.save(Limit.builder()
                     .accountFrom(limitRequest.getAccountFrom())
-                    .sumUsd(limitRequest.getSumUsd())
+                    .limitSum(limitRequest.getSumUsd())
                     .remainingLimit(limitRequest.getSumUsd())
                     .expenseCategory(limitRequest.getExpenseCategory())
-                    .dateTime(ZonedDateTime.now())
+                    .limitDateTime(ZonedDateTime.now())
+                    .limitCurrency("USD")
                     .build());
         }
     }

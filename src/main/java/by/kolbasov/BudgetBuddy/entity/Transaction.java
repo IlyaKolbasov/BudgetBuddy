@@ -33,6 +33,4 @@ public class Transaction {
     @JoinColumn(name="limit_id")
     private Limit limit;
 
-
-
 }

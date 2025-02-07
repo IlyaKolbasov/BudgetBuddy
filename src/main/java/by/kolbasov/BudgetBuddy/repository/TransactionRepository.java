@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-    List<Transaction> findAllByAccountFromAndCurrencyShortNameAndExpenseCategory(Long accountFrom, String currencyShortName, ExpenseCategory expenseCategory);
+    List<Transaction> findAllByAccountFromAndExpenseCategory(Long accountFrom,  ExpenseCategory expenseCategory);
 }

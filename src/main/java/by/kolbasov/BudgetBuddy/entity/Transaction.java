@@ -25,6 +25,7 @@ public class Transaction {
     private BigDecimal sum;
     private String currencyShortName;
     private ZonedDateTime dateTime;
+    private double rate;
     @Enumerated(EnumType.STRING)
     private ExpenseCategory expenseCategory;
     private boolean limitExceeded;

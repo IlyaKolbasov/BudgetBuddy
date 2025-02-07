@@ -1,8 +1,10 @@
 package by.kolbasov.BudgetBuddy.service;
 
+import by.kolbasov.BudgetBuddy.DTO.ConversionResult;
 import by.kolbasov.BudgetBuddy.DTO.TransactionRequest;
 import by.kolbasov.BudgetBuddy.entity.Limit;
 import by.kolbasov.BudgetBuddy.entity.Transaction;
+import by.kolbasov.BudgetBuddy.repository.ExchangeRateRepository;
 import by.kolbasov.BudgetBuddy.repository.LimitRepository;
 import by.kolbasov.BudgetBuddy.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +22,9 @@ public class TransactionService {
     private final LimitRepository limitRepository;
     private final CurrencyConverterService currencyConverterService;
 
+
     public void saveTransaction(TransactionRequest transactionRequest) {
-        Limit limit = limitRepository.findTopByAccountFromAndExpenseCategoryOrderByDateTimeDesc(transactionRequest.getAccountFrom(),transactionRequest.getExpenseCategory())
+        Limit limit = limitRepository.findTopByAccountFromAndExpenseCategoryOrderByDateTimeDesc(transactionRequest.getAccountFrom(), transactionRequest.getExpenseCategory())
                 .orElse(Limit.builder()
                         .accountFrom(transactionRequest.getAccountFrom())
                         .expenseCategory(transactionRequest.getExpenseCategory())
@@ -30,35 +33,34 @@ public class TransactionService {
                         .remainingLimit(BigDecimal.valueOf(1000))
                         .build());
 
-        limit.setRemainingLimit(limit.getRemainingLimit().subtract(currencyConverterService.convertCurrency(transactionRequest.getSum(), transactionRequest.getCurrencyShortName())));
+        ConversionResult conversionResult = currencyConverterService.convertCurrency(transactionRequest.getSum(), transactionRequest.getCurrencyShortName());
 
-        if(limit.getRemainingLimit().compareTo(BigDecimal.valueOf(0)) >= 0){
-            transactionRepository.save( Transaction.builder()
-                    .accountFrom(transactionRequest.getAccountFrom())
-                    .accountTo(transactionRequest.getAccountTo())
-                    .sum(transactionRequest.getSum())
-                    .currencyShortName(transactionRequest.getCurrencyShortName())
-                    .dateTime(ZonedDateTime.now())
-                    .expenseCategory(transactionRequest.getExpenseCategory())
-                    .limit(limit)
-                    .limitExceeded(false)
-                    .build());
+        limit.setRemainingLimit(limit.getRemainingLimit().subtract(conversionResult.getConvertedAmount()));
 
-        }else{
+        if (limit.getRemainingLimit().compareTo(BigDecimal.valueOf(0)) >= 0) {
             transactionRepository.save(Transaction.builder()
                     .accountFrom(transactionRequest.getAccountFrom())
                     .accountTo(transactionRequest.getAccountTo())
                     .sum(transactionRequest.getSum())
                     .currencyShortName(transactionRequest.getCurrencyShortName())
                     .dateTime(ZonedDateTime.now())
+                    .rate(conversionResult.getRate())
+                    .expenseCategory(transactionRequest.getExpenseCategory())
+                    .limit(limit)
+                    .limitExceeded(false)
+                    .build());
+        } else {
+            transactionRepository.save(Transaction.builder()
+                    .accountFrom(transactionRequest.getAccountFrom())
+                    .accountTo(transactionRequest.getAccountTo())
+                    .sum(transactionRequest.getSum())
+                    .currencyShortName(transactionRequest.getCurrencyShortName())
+                    .dateTime(ZonedDateTime.now())
+                    .rate(conversionResult.getRate())
                     .expenseCategory(transactionRequest.getExpenseCategory())
                     .limit(limit)
                     .limitExceeded(true)
                     .build());
         }
-
-
-
-
     }
 }

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -27,8 +28,7 @@ public class LimitService {
                     .accountFrom(limitRequest.getAccountFrom())
                     .sumUsd(limitRequest.getSumUsd())
                     .remainingLimit(limitRequest.getSumUsd()
-                            .subtract(sumAmountsByCurrency(limitRequest.getAccountFrom(), "RUB", limitRequest.getExpenseCategory()))
-                            .subtract(sumAmountsByCurrency(limitRequest.getAccountFrom(), "KZT", limitRequest.getExpenseCategory())))
+                            .subtract(sumAmountsByCurrency(limitRequest.getAccountFrom(), limitRequest.getExpenseCategory())))
                     .expenseCategory(limitRequest.getExpenseCategory())
                     .dateTime(ZonedDateTime.now())
                     .build());
@@ -44,11 +44,13 @@ public class LimitService {
     }
 
 
-    private BigDecimal sumAmountsByCurrency(Long accountFrom, String currencyShortName, ExpenseCategory expenseCategory) {
+    private BigDecimal sumAmountsByCurrency(Long accountFrom, ExpenseCategory expenseCategory) {
         List<Transaction> transactions = transactionRepository
-                .findAllByAccountFromAndCurrencyShortNameAndExpenseCategory(accountFrom, currencyShortName, expenseCategory);
+                .findAllByAccountFromAndExpenseCategory(accountFrom, expenseCategory);
         return transactions.stream()
-                .map(transaction -> currencyConverterService.convertCurrency(transaction.getSum(), transaction.getCurrencyShortName()))
+                .map(transaction -> transaction.getSum()
+                        .multiply(BigDecimal.valueOf(transaction.getRate()))
+                        .setScale(2, RoundingMode.HALF_UP))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     }

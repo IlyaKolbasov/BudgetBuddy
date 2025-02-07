@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class ExchangeRateService {
 
     private final ExchangeRateRepository exchangeRateRepository;
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
     @Scheduled(cron = "0 00 11 * * ?")
     @Scheduled(cron = "0 50 23 * * ?")// закрытие торгов

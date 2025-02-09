@@ -5,6 +5,7 @@ import by.kolbasov.BudgetBuddy.DTO.ConversionResult;
 import by.kolbasov.BudgetBuddy.entity.ExchangeRate;
 import by.kolbasov.BudgetBuddy.repository.ExchangeRateRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,6 +18,11 @@ public class CurrencyConverterService {
     private final ExchangeRateRepository exchangeRateRepository;
     private final RestTemplate restTemplate;
 
+
+    @Value("${twelvedata.api.url}")
+    private String apiUrl;
+    @Value("${twelvedata.api.key}")
+    private String apiKey;
     public ConversionResult convertCurrency(BigDecimal amount, String currency) {
 
         if (currency.contains("KZT") || currency.contains("RUB")) {
@@ -29,14 +35,16 @@ public class CurrencyConverterService {
                     .rate(exchangeRate.getRate())
                     .build();
         } else {
-            String urlString = "https://api.twelvedata.com/currency_conversion?symbol=" + currency + "/USD" + "&apikey=2f69b83a981440d2a7fecafc251fa120";
+            String urlString = String.format("%s?symbol=%s/USD&apikey=%s", apiUrl, currency, apiKey);
             ExchangeRate exchangeRate = restTemplate.getForObject(urlString, ExchangeRate.class);
-            return  ConversionResult.builder()
-                    .convertedAmount(amount.multiply(BigDecimal.valueOf(exchangeRate.getRate()))
-                            .setScale(2, RoundingMode.HALF_UP))
-                    .rate(exchangeRate.getRate())
-                    .build();
+            if (exchangeRate == null || exchangeRate.getRate() == 0) {
+                throw new IllegalArgumentException("Exchange rate not found for " + currency + "/USD");
+            }
+                return ConversionResult.builder()
+                        .convertedAmount(amount.multiply(BigDecimal.valueOf(exchangeRate.getRate()))
+                                .setScale(2, RoundingMode.HALF_UP))
+                        .rate(exchangeRate.getRate())
+                        .build();
         }
 
-    }
-}
+    }}

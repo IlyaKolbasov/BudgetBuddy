@@ -8,10 +8,7 @@ import by.kolbasov.BudgetBuddy.repository.TransactionRepository;
 import by.kolbasov.BudgetBuddy.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,9 +25,9 @@ public class TransactionController {
     }
 
     @GetMapping("/getTransaction")
-    public ResponseEntity<List<ExceededTransactionDTO>> getTransaction()
+    public ResponseEntity<List<ExceededTransactionDTO>> getTransaction(@RequestParam Long accountFrom)
     {
-       return ResponseEntity.ok(transactionRepository.findExceededTransactionDetails());
+       return ResponseEntity.ok(transactionRepository.findExceededTransactionDetails(accountFrom));
 
     }
 }

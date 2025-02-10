@@ -6,6 +6,7 @@ import by.kolbasov.BudgetBuddy.DTO.TransactionRequest;
 import by.kolbasov.BudgetBuddy.entity.Transaction;
 import by.kolbasov.BudgetBuddy.repository.TransactionRepository;
 import by.kolbasov.BudgetBuddy.service.TransactionService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class TransactionController {
     private final TransactionService transactionService;
     private final TransactionRepository transactionRepository;
     @PostMapping("/saveTransaction")
-    public ResponseEntity<String> saveTransaction(@RequestBody TransactionRequest transactionRequest)
+    public ResponseEntity<String> saveTransaction(@Valid @RequestBody TransactionRequest transactionRequest)
     {
         transactionService.saveTransaction(transactionRequest);
         return ResponseEntity.ok("SAVE");

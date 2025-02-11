@@ -25,7 +25,7 @@ public class CurrencyConverterService {
     private String apiKey;
     public ConversionResult convertCurrency(BigDecimal amount, String currency) {
 
-        if (currency.contains("KZT") || currency.contains("RUB")) {
+        if (currency.equals("KZT") || currency.equals("RUB")|| currency.equals("USD")) {
             ExchangeRate exchangeRate = exchangeRateRepository.findBySymbol(currency + "/USD")
                     .orElseThrow(() -> new IllegalArgumentException("Exchange rate not found for " + currency + "/USD"));
 

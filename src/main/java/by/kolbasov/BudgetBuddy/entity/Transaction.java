@@ -39,5 +39,4 @@ public class Transaction {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="limit_id")
     private Limit limit;
-
 }

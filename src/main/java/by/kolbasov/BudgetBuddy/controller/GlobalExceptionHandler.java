@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
         errors.put("message", "Validation failed");
 
         Map<String, String> fieldErrors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error ->
+        ex.getBindingResult().getFieldErrors().forEach(error ->   //получение списка ошибок валидации
                 fieldErrors.put(error.getField(), error.getDefaultMessage())
         );
         errors.put("errors", fieldErrors);

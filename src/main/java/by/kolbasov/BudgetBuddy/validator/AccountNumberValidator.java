@@ -9,7 +9,6 @@ public class AccountNumberValidator implements ConstraintValidator<ValidAccountN
     @Override
     public void initialize(ValidAccountNumber constraintAnnotation) {
     }
-
     @Override
     public boolean isValid(Long accountFrom, ConstraintValidatorContext context) {
         if (accountFrom == null) {

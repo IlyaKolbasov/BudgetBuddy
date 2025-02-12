@@ -16,13 +16,13 @@ import java.util.List;
 public class UpdateLimitsService {
     private final LimitRepository limitRepository;
      @Scheduled(cron = "0 0 0 1 * ?") // обновление лимитов 1-го числа нового месяца
-    public void updateLimits() {
-        List<Limit> limits = limitRepository.findAll();
-        for (Limit limit : limits) {
-            limit.setRemainingLimit(limit.getLimitSum());
-            limit.setLimitDateTime(ZonedDateTime.now());
-            limitRepository.save(limit);
-        }
-    }
+     public void updateLimits() {
+         List<Limit> limits = limitRepository.findAll();
+         for (Limit limit : limits) {
+             limit.setRemainingLimit(limit.getLimitSum());
+             limit.setLimitDateTime(ZonedDateTime.now());
+             limitRepository.save(limit);
+         }
+     }
 
 }

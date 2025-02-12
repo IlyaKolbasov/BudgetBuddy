@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 
 @Service
@@ -26,7 +27,7 @@ public class ExchangeRateService {
     @Value("${twelvedata.api.key}")
     private String apiKey;
 
-    @Scheduled(cron = "0 00 11 * * ?")
+    @Scheduled(cron = "0 54 14 * * ?")
     @Scheduled(cron = "0 50 23 * * ?")// закрытие торгов
     private void convertCurrency(){
         updateExchangeRate( "RUB/USD");
@@ -39,12 +40,12 @@ public class ExchangeRateService {
                         existingRate -> {
                             existingRate.setSymbol(exchangeRate.getSymbol());
                             existingRate.setRate(exchangeRate.getRate());
-                            existingRate.setDate(LocalDateTime.now());
+                            existingRate.setDate(ZonedDateTime.now());
                             exchangeRateRepository.save(existingRate);
                         },
                          ()->
                          {
-                             exchangeRate.setDate(LocalDateTime.now());
+                             exchangeRate.setDate(ZonedDateTime.now());
                              exchangeRateRepository.save(exchangeRate);
                          });
             }

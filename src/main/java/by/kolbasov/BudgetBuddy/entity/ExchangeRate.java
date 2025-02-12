@@ -9,8 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
 @Data
@@ -23,5 +22,5 @@ public class ExchangeRate {
     private Long id;
     private String symbol;
     private double rate;
-    private LocalDateTime date;
+    private ZonedDateTime date;
 }

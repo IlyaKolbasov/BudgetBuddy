@@ -43,7 +43,7 @@
 
 ### Фреймворки и библиотеки
 - **Spring WEB**: Работа с бинами, компонентами, конфигурациями.
-- **ORM**: Spring Data и JOOQ, включая Entities, Transactions, Relations (ManyToOne, OneToMany), JPQL.
+- **ORM**: Spring Data, включая Entities, Transactions, Relations (ManyToOne, OneToMany), JPQL.
 - **Lombok**: Упрощение кода с помощью аннотаций.
 - **Maven**: Управление зависимостями, плагины сборки, модули.
 
